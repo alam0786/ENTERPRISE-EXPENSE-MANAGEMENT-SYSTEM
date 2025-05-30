@@ -2,12 +2,16 @@ package in.zidiolearning.dto;
 
 
 import in.zidiolearning.entity.Role;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class RegisterRequest {
+@Builder
+@AllArgsConstructor
+public class UserDto {
+    private Long id;
     private String username;
     private String email;
-    private String password;
     private Role role;
 }
