@@ -1,4 +1,4 @@
-package in.zidiolearning.entity;
+package in.zidiolearning.Entity;
 
 
 import jakarta.persistence.*;
@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+
 
 @Entity
 @Data

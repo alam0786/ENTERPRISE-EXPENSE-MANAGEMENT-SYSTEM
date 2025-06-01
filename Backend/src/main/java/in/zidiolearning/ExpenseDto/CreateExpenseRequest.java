@@ -2,6 +2,7 @@ package in.zidiolearning.ExpenseDto;
 
 
 import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import in.zidiolearning.ExpenseEntity.Category;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateExpenseRequest {
+	private String username;
     private String title;
     private String description;
     private Double amount;

@@ -2,11 +2,12 @@ package in.zidiolearning.service;
 
 
 import io.jsonwebtoken.*;
+
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import in.zidiolearning.entity.User;
+import in.zidiolearning.Entity.User;
 
 import java.security.Key;
 import java.util.Date;

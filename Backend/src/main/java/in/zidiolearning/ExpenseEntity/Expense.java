@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import in.zidiolearning.Entity.User;
+import in.zidiolearning.Enums.ExpenseStatus;
 
 @Entity
 @Table(name = "expenses")
@@ -35,5 +39,24 @@ public class Expense {
     // @ManyToOne(fetch = FetchType.LAZY)
     // private User user;
 
+    @Enumerated(EnumType.STRING)
+    private ExpenseStatus status = ExpenseStatus.DRAFT;
+
+    private String rejectionReason;
+    private String rejectedBy;                
+    private LocalDateTime rejectedAt;
+
+    private LocalDateTime submittedAt;
     
-}
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+    
+    @Column(name = "current_approval_level", nullable = false)
+    private Integer currentApprovalLevel = 0;
+
+	
+	}
+    
+    
+

@@ -1,4 +1,4 @@
-package in.zidiolearning.dto;
+package in.zidiolearning.Dto;
 
 
 import lombok.AllArgsConstructor;

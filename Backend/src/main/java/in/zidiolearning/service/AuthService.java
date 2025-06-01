@@ -1,15 +1,16 @@
 package in.zidiolearning.service;
 
 import org.springframework.security.authentication.BadCredentialsException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import in.zidiolearning.dto.AuthRequest;
-import in.zidiolearning.dto.AuthResponse;
-import in.zidiolearning.dto.RegisterRequest;
-import in.zidiolearning.entity.Role;
-import in.zidiolearning.entity.User;
-import in.zidiolearning.repository.UserRepository;
+import in.zidiolearning.Dto.AuthRequest;
+import in.zidiolearning.Dto.AuthResponse;
+import in.zidiolearning.Dto.RegisterRequest;
+import in.zidiolearning.Entity.Role;
+import in.zidiolearning.Entity.User;
+import in.zidiolearning.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 

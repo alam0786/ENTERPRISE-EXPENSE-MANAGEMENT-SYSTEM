@@ -1,7 +1,7 @@
-package in.zidiolearning.dto;
+package in.zidiolearning.Dto;
 
 
-import in.zidiolearning.entity.Role;
+import in.zidiolearning.Entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

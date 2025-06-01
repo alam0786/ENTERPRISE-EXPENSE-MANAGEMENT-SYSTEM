@@ -1,14 +1,15 @@
-package in.zidiolearning.controller;
+package in.zidiolearning.Controller;
 
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import in.zidiolearning.dto.AuthRequest;
-import in.zidiolearning.dto.AuthResponse;
-import in.zidiolearning.dto.RegisterRequest;
+import in.zidiolearning.Dto.AuthRequest;
+import in.zidiolearning.Dto.AuthResponse;
+import in.zidiolearning.Dto.RegisterRequest;
 import in.zidiolearning.service.AuthService;
 import lombok.RequiredArgsConstructor;
 

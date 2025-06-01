@@ -1,4 +1,4 @@
-package in.zidiolearning.controller;
+package in.zidiolearning.Controller;
 
 
 import org.springframework.security.access.prepost.PreAuthorize;

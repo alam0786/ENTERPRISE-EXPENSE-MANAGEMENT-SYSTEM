@@ -1,4 +1,4 @@
-package in.zidiolearning.config;
+package in.zidiolearning.Config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

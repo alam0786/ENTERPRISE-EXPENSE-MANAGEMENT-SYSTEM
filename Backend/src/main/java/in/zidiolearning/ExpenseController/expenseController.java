@@ -1,16 +1,19 @@
-package in.zidiolearning.expenseController;
+package in.zidiolearning.ExpenseController;
 
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import in.zidiolearning.ExpenseDto.CreateExpenseRequest;
 import in.zidiolearning.ExpenseDto.ExpenseResponse;
 import in.zidiolearning.ExpenseDto.UpdateExpenseRequest;
+import in.zidiolearning.ExpenseEntity.Expense;
 import in.zidiolearning.expenseService.ExpenseService;
 
 import java.io.IOException;
@@ -30,7 +33,8 @@ public class ExpenseController {
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'ADMIN')")
     public ResponseEntity<ExpenseResponse> createExpense(
             @RequestPart("expense") String expenseJson,
-            @RequestPart(value = "invoice", required = false) MultipartFile invoice
+            @RequestPart(value = "invoice", required = false) MultipartFile invoice,
+            @AuthenticationPrincipal UserDetails user
     ) throws IOException {
         CreateExpenseRequest request = objectMapper.readValue(expenseJson, CreateExpenseRequest.class);
         ExpenseResponse response = expenseService.createExpense(request, invoice);
@@ -69,4 +73,22 @@ public class ExpenseController {
         List<ExpenseResponse> expenses = expenseService.getAllExpenses();
         return ResponseEntity.ok(expenses);
     }
+    
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<ExpenseResponse> approve(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails user) {
+        Expense expense = expenseService.approveExpense(id, user.getUsername());
+        return ResponseEntity.ok(expenseService.mapToResponse(expense));
+    }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<ExpenseResponse> reject(@PathVariable("id") Long id, @RequestBody String reason, @AuthenticationPrincipal UserDetails user) {
+        Expense expense = expenseService.rejectExpense(id, user.getUsername(), reason);
+        return ResponseEntity.ok(expenseService.mapToResponse(expense));
+    }
+    
+    
+
+    
+
+
 }

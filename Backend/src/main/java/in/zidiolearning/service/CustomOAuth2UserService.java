@@ -2,14 +2,15 @@ package in.zidiolearning.service;
 
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import in.zidiolearning.entity.Role;
-import in.zidiolearning.entity.User;
-import in.zidiolearning.repository.UserRepository;
+import in.zidiolearning.Entity.Role;
+import in.zidiolearning.Entity.User;
+import in.zidiolearning.Repository.UserRepository;
 
 import java.util.Map;
 
