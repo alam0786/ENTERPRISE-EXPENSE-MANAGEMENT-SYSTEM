@@ -1,4 +1,4 @@
-package in.zidiolearning.Expenserepository;
+package in.zidiolearning.expenseRepository;
 
 import java.util.List;
 

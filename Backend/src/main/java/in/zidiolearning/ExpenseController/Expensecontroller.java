@@ -1,16 +1,16 @@
-package in.zidiolearning.Expensecontroller;
+package in.zidiolearning.ExpenseController;
 
-import java.util.List;
+import java.util.List; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import in.zidiolearning.ExpenseEntity.Expense;
+import in.zidiolearning.expenseService.ExpenseService;
 import in.zidiolearning.Enum.Status;
-import in.zidiolearning.Expenseservice.ExpenseService;
 
 @RestController
 @RequestMapping("/api/expenses")
-public class ExpenseController {
+public class Expensecontroller {
 
 	@Autowired
 	private ExpenseService expenseService;

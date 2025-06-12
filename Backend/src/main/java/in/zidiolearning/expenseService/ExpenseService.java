@@ -1,13 +1,14 @@
-package in.zidiolearning.Expenseservice;
+package in.zidiolearning.expenseService;
 
 import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import in.zidiolearning.Enum.Status;
 import in.zidiolearning.ExpenseEntity.Expense;
-import in.zidiolearning.Expenserepository.ExpenseRepository;
+import in.zidiolearning.expenseRepository.ExpenseRepository;
 
 @Service
 public class ExpenseService {
