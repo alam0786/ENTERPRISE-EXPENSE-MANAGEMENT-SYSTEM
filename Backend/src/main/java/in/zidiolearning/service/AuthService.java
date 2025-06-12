@@ -1,60 +1,77 @@
 package in.zidiolearning.service;
 
-import org.springframework.security.authentication.BadCredentialsException;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import in.zidiolearning.Dto.AuthRequest;
-import in.zidiolearning.Dto.AuthResponse;
 import in.zidiolearning.Dto.RegisterRequest;
 import in.zidiolearning.Entity.Role;
 import in.zidiolearning.Entity.User;
+import in.zidiolearning.Repository.RoleRepository;
 import in.zidiolearning.Repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import in.zidiolearning.utils.JwtUtil;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder encoder;
-    private final JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
 
-    public AuthResponse register(RegisterRequest request) {
-        User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(encoder.encode(request.getPassword()))
-                .role(request.getRole() != null ? request.getRole() : Role.ROLE_EMPLOYEE)
-                .build();
-        userRepository.save(user);
+    @Autowired
+    private RoleRepository roleRepository;
 
-        String token = jwtService.generateToken(user);
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-        return AuthResponse.builder()
-                .token(token)
-                .email(user.getEmail())
-                .role(user.getRole().name())
-                .build();
-    }
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    public AuthResponse authenticate(AuthRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadCredentialsException("Invalid email"));
+    @Autowired
+    private JwtUtil jwtUtil;
 
-        if (!encoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Invalid password");
+    public String register(RegisterRequest request) {
+        if (request.getRoleName() == null) {
+            throw new RuntimeException("Role name cannot be null");
         }
 
-        String token = jwtService.generateToken(user);
+        Role role = roleRepository.findByName(request.getRoleName())
+            .orElseThrow(() -> new RuntimeException("Role not found: " + request.getRoleName()));
 
-        return AuthResponse.builder()
-                .token(token)
-                .email(user.getEmail())
-                .role(user.getRole().name())
-                .build();
+        User user = new User();
+        user.setUsername(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setActive(true);
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        user.setRoles(roles);
+
+        userRepository.save(user);
+
+        // Return token immediately after registration (optional)
+        return jwtUtil.generateToken(user.getEmail());
+    }
+
+    public String authenticate(AuthRequest request) {
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()
+            )
+        );
+
+        User user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return jwtUtil.generateToken(user.getEmail());
     }
 }

@@ -1,29 +1,37 @@
-package in.zidiolearning.Entity;
+package in.zidiolearning.ReportEntity;
 
+import java.time.LocalDate;
 import java.util.Set;
 
-import jakarta.persistence.Column;
+import in.zidiolearning.Entity.Role;
+import in.zidiolearning.Entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "role")
+@Table(name = "user")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Report 
+{
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Column(unique = true, nullable = false)
-	private String name; // ADMIN, MANAGER, EMPLOYEE
+	
+	private String reportTye; // Monthly, Yearly
+	
+	private String fileUrl; //PDF or Excel
+	
+	private LocalDate genrateDate;
+	
+	private Long userId; // optional, for user-specific reports
+	
 }

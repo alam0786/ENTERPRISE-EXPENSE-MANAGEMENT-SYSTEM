@@ -1,8 +1,10 @@
-package in.zidiolearning.Entity;
+package in.zidiolearning.Approvalentity;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
-import jakarta.persistence.Column;
+import in.zidiolearning.Entity.Role;
+import in.zidiolearning.Entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,16 +16,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "role")
+@Table(name = "approval")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+@Builder
+public class Approval 
+{
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(unique = true, nullable = false)
-	private String name; // ADMIN, MANAGER, EMPLOYEE
+	private long id;
+	
+	private Long expenseid;
+	
+	private Long approvalid;
+	
+	private String level;
+	
+	private String decision;
+	
+	private LocalDateTime decisionDate;
+	
+	private String remarks;
+	
 }

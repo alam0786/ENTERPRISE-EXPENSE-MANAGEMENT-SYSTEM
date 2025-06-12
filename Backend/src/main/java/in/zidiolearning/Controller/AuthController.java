@@ -23,11 +23,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    	String token = authService.register(request);
+        return ResponseEntity.ok(new AuthResponse("Registration Successful",token,request.getName()));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+    	String token = authService.authenticate(request);
+        return ResponseEntity.ok(new AuthResponse("Login Successful",token));
     }
 }

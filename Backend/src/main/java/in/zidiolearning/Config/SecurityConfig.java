@@ -1,52 +1,35 @@
 package in.zidiolearning.Config;
 
+
+import in.zidiolearning.security.JwtAuthenticationFilter;
+import in.zidiolearning.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import in.zidiolearning.security.JwtAuthFilter;
-import in.zidiolearning.service.CustomOAuth2UserService;
-import in.zidiolearning.service.UserDetailsServiceImpl;
-
 @Configuration
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
+    
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    
     private final UserDetailsServiceImpl userDetailsService;
-    private final CustomOAuth2UserService oAuth2UserService;
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-          .csrf(csrf -> csrf.disable())
-          .authorizeHttpRequests(auth -> auth
-              .requestMatchers("/api/auth/**", "/oauth2/**").permitAll()
-              .requestMatchers("/api/admin/**").hasRole("ADMIN")
-              .requestMatchers("/api/manager/**").hasRole("MANAGER")
-              .requestMatchers("/api/employee/**").hasRole("EMPLOYEE")
-              .requestMatchers("/api/expenses/**").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
-              .anyRequest().authenticated()
-          )
-          .oauth2Login(oauth2 -> oauth2
-              .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
-          )
-          .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-          .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -54,8 +37,32 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-            throws Exception {
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**", "/api/oauth/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .oauth2Login()   // <-- added for OAuth2 Login
+            .and()
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 }
