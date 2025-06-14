@@ -26,6 +26,6 @@ public class OAuthController {
                 request.provider, request.providerId, request.name, request.email, request.role);
         String token = jwtUtil.generateToken(user.getEmail());
 
-        return ResponseEntity.ok(new AuthResponse("OAuth Login Successful", token, user.getUsername(), user.getEmail(), request.role));
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

@@ -1,7 +1,6 @@
 package in.zidiolearning.Controller;
 
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +23,13 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
     	String token = authService.register(request);
-        return ResponseEntity.ok(new AuthResponse("Registration Successful",token,request.getName()));
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
     	String token = authService.authenticate(request);
-        return ResponseEntity.ok(new AuthResponse("Login Successful",token));
+        return ResponseEntity.ok(new AuthResponse(token));
     }
+    
 }

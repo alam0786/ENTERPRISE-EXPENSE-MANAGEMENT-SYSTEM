@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableMethodSecurity
@@ -31,9 +32,8 @@ public class SecurityConfig {
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 	private final UserDetailsServiceImpl userDetailsService;
-	
-	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
+	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -55,18 +55,13 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
-		.csrf(csrf -> csrf.disable())
-		.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-		 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-		 .authorizeHttpRequests(auth -> auth
-				 .requestMatchers("/api/auth/**", "/api/oauth/**").permitAll()
-				 .anyRequest().authenticated()
-				 )
-		  .oauth2Login(oauth -> oauth
-		  .successHandler(oAuth2AuthenticationSuccessHandler))
-		  .authenticationProvider(authenticationProvider())
-		  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/oauth/**", "/v3/api-docs/**",
+						"/swagger-ui/**", "/swagger-ui.html").permitAll().anyRequest().authenticated())
+				.oauth2Login(oauth -> oauth.successHandler(oAuth2AuthenticationSuccessHandler))
+				.authenticationProvider(authenticationProvider())
+				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
